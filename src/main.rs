@@ -1,10 +1,34 @@
 use std::{
-    fs, io::{prelude::*, BufReader}, net::{TcpListener, TcpStream}
+    fs, 
+    io::{prelude::*, BufReader}, 
+    net::{TcpListener, TcpStream},
+    thread
 };
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7879").unwrap();
+    thread::spawn(|| {
+        server_init("127.0.0.1:7878");
+    });
+    thread::spawn(|| {
+        server_init("127.0.0.1:7879");
+    });
+    loop{};
+}
 
+fn server_init(addr: &str) {
+    let listener = TcpListener::bind(addr).unwrap();
+    match listener.accept() {
+        Ok((_socket, addr)) => {
+            thread::spawn(|| {
+                server_listener(listener);
+            });
+            println!("new client: {addr:?}\n\n");
+        },
+        Err(e) => println!("couldn't get client: {e:?}"),
+    }
+}
+
+fn server_listener(listener: TcpListener) {
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
@@ -14,7 +38,14 @@ fn main() {
 
 fn handle_connection(mut stream: TcpStream) {
     let buf_reader = BufReader::new(&stream);
-    let request_line = buf_reader.lines().next().unwrap().unwrap();
+    let request_line: String;
+    match buf_reader.lines().next() {
+        Some(t) => request_line = t.unwrap(),
+        None => {
+            print!("Request line error\n");
+            return;
+        },
+    };
     print!("request: {}\n", request_line);
     let (status_line, filename) = match &request_line[..] {
         "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "./res/hello.html"),
