@@ -46,26 +46,30 @@ fn handle_connection(mut stream: TcpStream) {
             return;
         },
     };
-    print!("request: {}\n", request_line);
-    let (status_line, filename) = match &request_line[..] {
-        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "./res/hello.html"),
-        "GET /style.css HTTP/1.1" => ("HTTP/1.1 200 OK", "./res/style.css"),
-        "GET /parser.js HTTP/1.1" => ("HTTP/1.1 200 OK", "./res/parser.js"),
+    // print!("request: {}\n", request_line);
+    match &request_line[..] {
+        "GET / HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/hello.html", &stream),
+        "GET /style.css HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/style.css", &stream),
+        "GET /parser.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/parser.js", &stream),
         _ => {
             if let Some(aux) = request_line.split_once("/ HTTP/1.1"){
                 if let Some(value) = aux.0.split_once('.') {
-                    print!("obtained  {} and {} \n", value.0, value.1.trim());
+                    print!("obtained  {} and {} \n", &value.0, &value.1.trim());
+                    stream.write(format!("{}::{}", value.0, value.1).as_bytes()).unwrap();
                 }
             }
-            ("HTTP/1.1 404 NOT FOUND", "./res/404.html")
         },
     };
+}
+
+fn tcp_respond(status_line: &str, filename: &str, mut stream: &TcpStream) {
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
-
+    
     let response = format!(
         "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
     );
     
     stream.write(response.as_bytes()).unwrap();
+
 }
