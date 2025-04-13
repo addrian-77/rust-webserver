@@ -1,9 +1,21 @@
+body {
+    height: 50%;
+    width: 80%;
+    zoom: 2;
+}
+
 button {
     color: red;
     width: 100px;
     height: 100px;
 }
 
+button:active {
+    background-color: red;
+}
+
 div {
+    height: 100%;
+    width: 100%;
     text-align: center;
 }
