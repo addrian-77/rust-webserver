@@ -10,10 +10,6 @@ button {
     height: 100px;
 }
 
-button:active {
-    background-color: red;
-}
-
 div {
     height: 100%;
     width: 100%;

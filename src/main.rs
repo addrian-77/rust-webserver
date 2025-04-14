@@ -1,7 +1,7 @@
 use std::{
     fs, 
     io::{prelude::*, BufReader}, 
-    net::{TcpListener, TcpStream},
+    net::{TcpListener, TcpStream, UdpSocket},
     thread
 };
 
@@ -56,7 +56,7 @@ fn handle_connection(stream: TcpStream, filename: &str) {
             return;
         },
     };
-    print!("request: {}\n", request_line);
+    // print!("request: {}\n", request_line);
     match &request_line[..] {
         "GET / HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", filename, &stream),
         "GET /style.css HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/style.css", &stream),
@@ -64,8 +64,11 @@ fn handle_connection(stream: TcpStream, filename: &str) {
         _ => {
             if let Some(aux) = request_line.split_once("/ HTTP/1.1"){
                 if let Some(value) = aux.0.split_once('.') {
-                    print!("obtained  {} and {} \n", &value.0, &value.1.trim());
-                    // stream.write(format!("{}::{}", value.0, value.1).as_bytes()).unwrap();
+                    // print!("obtained  {} and {} \n", &value.0, &value.1.trim());
+                    let udp_socket = UdpSocket::bind("0.0.0.0:0").expect("couldn't bind to address");
+                    udp_socket.connect("10.42.0.113:7880").expect("connect function failed");
+                    
+                    udp_socket.send(format!("{} {}", value.0, value.1).as_bytes()).unwrap();
                 }
             }
         },
@@ -79,7 +82,7 @@ fn tcp_respond(status_line: &str, filename: &str, mut stream: &TcpStream) {
     let response = format!(
         "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
     );
-
+    
     // print!("responded with {response}");
     
     stream.write(response.as_bytes()).unwrap();
