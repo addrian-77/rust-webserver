@@ -39,14 +39,16 @@ fn server_init(ip: &str, port: &str) {
 }
 
 fn server_listener(listener: TcpListener, port: &'static &str) {
+    let udp_socket = UdpSocket::bind("0.0.0.0:0").expect("couldn't bind to address");
+    udp_socket.connect("10.42.0.113:7880").expect("connect function failed");
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
-        handle_connection(stream, if *port == "7878" { "./res/player1.html" } else { "./res/player2.html" });
+        handle_connection(stream, if *port == "7878" { "./res/player1.html" } else { "./res/player2.html" }, &udp_socket);
     }
 }
 
-fn handle_connection(stream: TcpStream, filename: &str) {
+fn handle_connection(stream: TcpStream, filename: &str, udp_socket: &UdpSocket) {
     let buf_reader = BufReader::new(&stream);
     let request_line: String;
     match buf_reader.lines().next() {
@@ -56,26 +58,37 @@ fn handle_connection(stream: TcpStream, filename: &str) {
             return;
         },
     };
-    // print!("request: {}\n", request_line);
+    print!("request: {}\n", request_line);
     match &request_line[..] {
         "GET / HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", filename, &stream),
         "GET /style.css HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/style.css", &stream),
-        "GET /parser.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/parser.js", &stream),
+        "GET /parser1.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/parser1.js", &stream),
+        "GET /parser2.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/parser2.js", &stream),
         _ => {
+            tcp_respond("kkkkk", filename, &stream);
             if let Some(aux) = request_line.split_once("/ HTTP/1.1"){
-                if let Some(value) = aux.0.split_once('.') {
-                    // print!("obtained  {} and {} \n", &value.0, &value.1.trim());
-                    let udp_socket = UdpSocket::bind("0.0.0.0:0").expect("couldn't bind to address");
-                    udp_socket.connect("10.42.0.113:7880").expect("connect function failed");
-                    
-                    udp_socket.send(format!("{} {}", value.0, value.1).as_bytes()).unwrap();
-                }
+                let value = aux.0.trim();
+                print!("obtained  [{}]\n", value);
+                match value {
+                    "Up" => udp_socket.send("w".as_bytes()).unwrap(),
+                    "Down" => udp_socket.send("s".as_bytes()).unwrap(),
+                    "Left" => udp_socket.send("a".as_bytes()).unwrap(),
+                    "Right" => udp_socket.send("d".as_bytes()).unwrap(),
+                    "Up2" => udp_socket.send("u".as_bytes()).unwrap(),
+                    "Down2" => udp_socket.send("j".as_bytes()).unwrap(),
+                    "Left2" => udp_socket.send("h".as_bytes()).unwrap(),
+                    "Right2" => udp_socket.send("k".as_bytes()).unwrap(),
+                    "Select" => udp_socket.send("e".as_bytes()).unwrap(),
+                    "Back" => udp_socket.send("q".as_bytes()).unwrap(),
+                    _ => 0,
+                };
             }
         },
     };
 }
 
 fn tcp_respond(status_line: &str, filename: &str, mut stream: &TcpStream) {
+    print!("reequested file {}\n", filename);
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
     

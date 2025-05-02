@@ -1,13 +1,14 @@
 body {
     height: 50%;
     width: 80%;
-    zoom: 2;
+    zoom: 1;
 }
 
 button {
     color: red;
     width: 100px;
     height: 100px;
+    font-size: 10px;
 }
 
 div {

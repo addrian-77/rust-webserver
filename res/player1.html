@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   	<head>
-    	<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     	<title>Hello!</title>
     	<link rel = "stylesheet" href = "./style.css">
-		<script src = "./parser.js"></script>
+		<script src = "./parser1.js"></script>
 	</head>
   	<body>
 		<h>You are player 1</h>
 		<div>
-			<button name = "Input.Up" ontouchstart = "send(this)">Up</button>
+			<button name = "Up" id = "Up" ontouchstart = "get(this)">Up</button>
 			<br>
-			<button name = "Input.Left" ontouchstart = "send(this)">Left</button>
-			<button name = "Input.Down" ontouchstart = "send(this)">Down</button>
-			<button name = "Input.Right" ontouchstart = "send(this)">Right</button>
+			<button name = "Left" id = "Left" ontouchstart = "get(this)">Left</button>
+			<button name = "Down" id = "Down" ontouchstart = "get(this)">Down</button>
+			<button name = "Right" id = "Right" ontouchstart = "get(this)">Right</button>
 		</div>
 			<br>
 			<br>
 			<br>
-		<div>
-			<button name = "Button.Select" ontouchstart = "send(this)">Select</button>
-			<button name = "Button.Back" ontouchstart = "send(this)">Back</button>
+		<div>`
+			<button name = "Select" id = "Select" ontouchstart = "get(this)">Select</button>
+			<button name = "Back" id = "Back" ontouchstart = "get(this)">Back</button>
 		</div>
 	</body>
 </html>
