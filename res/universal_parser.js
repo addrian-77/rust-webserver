@@ -50,7 +50,7 @@ window.addEventListener("keyup", (e) => {
     pressedKeys.delete(e.key);
 });
 
-setInterval(sendKeyStates, 20);
+setInterval(sendKeyStates, 10);
 
 function ans(value) {
     let command = "";

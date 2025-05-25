@@ -15,7 +15,6 @@ function ans(value) {
 
 window.addEventListener("keydown", (e) => {
     const key = e.key;
-    console.log(key);
 
     switch (key) {
         case "ArrowUp": ans("Up"); break;

@@ -78,6 +78,7 @@ fn server_listener(listener: TcpListener, port: &'static &str) {
                         1 => "./res/snake-1.html",
                         2 => "./res/spaceinvaders-1.html",
                         3 => "./res/sokoban-1.html",
+                        4 => "./res/breakout-1.html",    // replace with atari
                         _ => "./res/menu.html",
                     }
                 }
@@ -87,6 +88,7 @@ fn server_listener(listener: TcpListener, port: &'static &str) {
                         1 => "./res/snake-2.html",
                         2 => "./res/spaceinvaders-2.html",
                         3 => "./res/sokoban-2.html",
+                        4 => "./res/breakout-2.html",
                         _ => "./res/menu.html",
                     }
                 }
@@ -96,6 +98,7 @@ fn server_listener(listener: TcpListener, port: &'static &str) {
                         1 => "./res/snake-1.html",
                         2 => "./res/spaceinvaders-1.html",
                         3 => "./res/sokoban-1.html",
+                        4 => "./res/breakout-1.html",
                         _ => "./res/menu.html",
                     } 
                 }
@@ -139,6 +142,8 @@ fn handle_connection(stream: TcpStream, filename: &str, udp_socket: &UdpSocket) 
         "GET /style.css HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/style.css", &stream),
         "GET /universal_parser.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/universal_parser.js", &stream),
         "GET /slow_parser.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/slow_parser.js", &stream),
+        "GET /breakout_parser.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/breakout_parser.js", &stream),
+        "GET /sokoban_parser.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/sokoban_parser.js", &stream),
         "GET /poll.js HTTP/1.1" => tcp_respond("HTTP/1.1 200 OK", "./res/poll.js", &stream),
         _ => {
             tcp_respond("HTTP/1.1 200 OK", filename, &stream);
@@ -156,8 +161,12 @@ fn handle_connection(stream: TcpStream, filename: &str, udp_socket: &UdpSocket) 
                     "Down2" => udp_socket.send("j".as_bytes()).unwrap(),
                     "Left2" => udp_socket.send("h".as_bytes()).unwrap(),
                     "Right2" => udp_socket.send("k".as_bytes()).unwrap(),
-                    "Left2_Shoot" =>udp_socket.send("p".as_bytes()).unwrap(),
-                    "Right2_Shoot" =>udp_socket.send("o".as_bytes()).unwrap(),
+                    "Left2_Shoot" => udp_socket.send("p".as_bytes()).unwrap(),
+                    "Right2_Shoot" => udp_socket.send("o".as_bytes()).unwrap(),
+                    "LeftLeft" => udp_socket.send("1".as_bytes()).unwrap(),
+                    "RightLeft" => udp_socket.send("2".as_bytes()).unwrap(),
+                    "LeftRight" => udp_socket.send("3".as_bytes()).unwrap(),
+                    "RightRight" => udp_socket.send("4".as_bytes()).unwrap(),
                     "Select" => udp_socket.send("e".as_bytes()).unwrap(),
                     "Back" => udp_socket.send("q".as_bytes()).unwrap(),
                     _ => 0,
