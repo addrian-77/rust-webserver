@@ -12,11 +12,12 @@
 		<div class="row">
 		<div class="column">
 		<div>
-			<button name = "Up" id = "Up" ontouchstart="ans(this)" onclick="ans(this)">Up</button>
+			<button name="Up" id="Up" ontouchstart="startSending(this)" ontouchend="stopSending(this)" onclick="ans(this)">Up</button>
+
 			<br />
-			<button name = "Left" id = "Left" ontouchstart="ans(this)" onclick="ans(this)">Left</button>
-			<button name = "Down" id = "Down" ontouchstart="ans(this)" onclick="ans(this)">Down</button>
-			<button name = "Right" id = "Right" ontouchstart="ans(this)" onclick="ans(this)">Right</button>
+			<button name="Left" id="Left" ontouchstart="startSending(this)" ontouchend="stopSending(this)" onclick="ans(this)">Left</button>
+			<button name="Down" id="Down" ontouchstart="startSending(this)" ontouchend="stopSending(this)" onclick="ans(this)">Down</button>
+			<button name="Right" id="Right" ontouchstart="startSending(this)" ontouchend="stopSending(this)" onclick="ans(this)">Right</button>
 		</div>
 		</div>
 		<div class="column">	

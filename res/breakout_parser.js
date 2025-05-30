@@ -53,3 +53,20 @@ function ans(value) {
     xhr.open(command, "/", true);
     xhr.send();
 }
+
+
+const touchIntervals = {}; // Stores active intervals for each button
+
+function startSending(button) {
+    const name = button.name || button.id;
+    if (touchIntervals[name]) return; // Already sending
+
+    ans(name); // Send immediately on touch
+    touchIntervals[name] = setInterval(() => ans(name), 10); // Send every 100ms
+}
+
+function stopSending(button) {
+    const name = button.name || button.id;
+    clearInterval(touchIntervals[name]);
+    delete touchIntervals[name];
+}
